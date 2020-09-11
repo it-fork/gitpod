@@ -114,6 +114,7 @@ func Run(options ...RunOption) {
 		Ports:    portMgmt,
 		IDEReady: ideReady,
 	})
+	apiServices = append(apiServices, &RegistrableTokenService{NewInMemoryTokenService()})
 	apiServices = append(apiServices, opts.AdditionalServices...)
 
 	var wg sync.WaitGroup

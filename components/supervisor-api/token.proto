@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package supervisor;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "api";
+
+service TokenService {
+    rpc GetToken(GetTokenRequest) returns (GetTokenResponse) {
+        option (google.api.http) = {
+            get: "/v1/token/{host}/{scope}"
+        };
+    }
+
+    rpc SetToken(SetTokenRequest) returns (SetTokenResponse) {
+        option (google.api.http) = {
+            post: "/v1/token/{host}/{scope}"
+        };
+    }
+
+    rpc ProvideToken(stream ProvideTokenRequest) returns (stream ProvideTokenResponse) {}
+}
+
+message GetTokenRequest {
+    string host = 1;
+    repeated string scope = 2;
+    string description = 3;
+}
+message GetTokenResponse {
+    string token = 1;
+}
+
+message SetTokenRequest {
+    string host = 1;
+    repeated string scope = 2;
+    string token = 3;
+    google.protobuf.Timestamp expiry_date = 4;
+}
+message SetTokenResponse {}
+
+message ProvideTokenRequest {
+    message RegisterProvider {
+        string host = 1;
+    }
+    
+    oneof message {
+        RegisterProvider registration = 1;
+        SetTokenRequest answer = 2;
+    };
+}
+message ProvideTokenResponse {
+    GetTokenRequest request = 1;
+}

@@ -9,6 +9,7 @@ require (
 	github.com/gitpod-io/gitpod/content-service/api v0.0.0-00010101000000-000000000000
 	github.com/gitpod-io/gitpod/supervisor/api v0.0.0-00010101000000-000000000000
 	github.com/gitpod-io/gitpod/ws-sync/api v0.0.0-00010101000000-000000000000
+	github.com/golang/protobuf v1.4.2
 	github.com/google/go-cmp v0.5.1
 	github.com/grpc-ecosystem/grpc-gateway v1.14.8
 	github.com/prometheus/procfs v0.0.8 // indirect
