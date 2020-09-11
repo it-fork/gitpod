@@ -32,11 +32,16 @@ export class Env extends AbstractComponentEnv {
         return envValue ? parseInt(envValue, 10) : 5 * this.theiaHeartbeatInterval;
     }
 
-    readonly codeImageRepo = process.env.CODE_IMAGE_REPO || 'unknown';
-    
     readonly theiaVersion = process.env.THEIA_VERSION || this.serverVersion;
     readonly theiaImageRepo = process.env.THEIA_IMAGE_REPO || 'unknown';
     readonly theiaMounted = process.env.THEIA_MOUNTED === "true";
+
+    readonly ideImageAliases: { [index: string]: string } = (() => {
+        const envValue = process.env.IDE_IMAGE_ALIASES;
+        let res = !!envValue ? JSON.parse(envValue) : {};
+        res["theia"] = `${this.theiaImageRepo}:${this.theiaVersion}`;
+        return res;
+    })()
 
     readonly gitpodRegion: string = process.env.GITPOD_REGION || 'unknown';
 

@@ -18,6 +18,7 @@ import { HostContextProvider } from "../auth/host-context-provider";
 import { AuthorizationService } from "../user/authorization-service";
 import { TheiaPluginService } from "../theia-plugin/theia-plugin-service";
 import { TraceContext } from "@gitpod/gitpod-protocol/lib/util/tracing";
+import { Env } from "../env";
 
 const POD_PATH_WORKSPACE_BASE = "/workspace";
 
@@ -35,6 +36,7 @@ export class ConfigProvider {
     @inject(HostContextProvider) protected readonly hostContextProvider: HostContextProvider;
     @inject(AuthorizationService) protected readonly authService: AuthorizationService;
     @inject(TheiaPluginService) protected readonly pluginService: TheiaPluginService;
+    @inject(Env) protected readonly env: Env;
 
     public async fetchConfig(ctx: TraceContext, user: User, commit: CommitContext): Promise<WorkspaceConfig> {
         const span = TraceContext.startSpan("fetchConfig", ctx);
@@ -135,6 +137,13 @@ export class ConfigProvider {
             if (!!user.featureFlags) {
                 const workspacePersistedFlags: NamedWorkspaceFeatureFlag[] = [ "full_workspace_backup" ];
                 config._featureFlags = workspacePersistedFlags.filter(f => (user.featureFlags!.permanentWSFeatureFlags || []).includes(f));
+            }
+
+            if (!!config.ide) {
+                const mapped = this.env.ideImageAliases[config.ide];
+                if (!!mapped) {
+                    config.ide = mapped;
+                }
             }
 
             return config;
